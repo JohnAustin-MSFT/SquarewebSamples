@@ -89,7 +89,7 @@ function getOAuthToken_curl($authorizationCode, $applicationId, $applicationSecr
     'client_secret' => $applicationSecret,
     'code' => $authorizationCode
   );
-  $encodedData = json_encode($oauthRequestBody);
+  $encodedData = json_encode($oauthRequestBody, JSON_UNESCAPED_SLASHES);
     
   $ch = curl_init($squareDomain. '/oauth2/token');
   curl_setopt($ch, CURLOPT_POST, true);
@@ -97,7 +97,7 @@ function getOAuthToken_curl($authorizationCode, $applicationId, $applicationSecr
   curl_setopt($ch, CURLOPT_POSTFIELDS, $encodedData);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-  $response = curl_exec($ch);
+  $response = json_decode(curl_exec($ch), true) ;
   curl_close($ch);
 
   if ($response == null || !is_array($response) || !array_key_exists('access_token', $response)) {
